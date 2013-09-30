@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "pa05.h"
+#define LINELENGTH 80
 
 /*
  * Read a file of integers.
@@ -162,29 +163,13 @@ char** readString(char * filename, int * numString)
 		printf("Error, file not found");
 		return NULL;
 	}
-	int len = 0;
 
-	len = fscanf(f, "%s");
-	/*while(!feof(f)){
-		(*numString)++;
-		if(len < fscanf(f, "%s")){
-			len = fscanf(f, "%s");
-		}
+	char input[LINELENGTH];
+	while(fgets(input, LINELENGTH, f) != NULL){
+		printf("hello");
+		(*numString) = (*numString) + 1;
 	}
-	printf("size of the array: %d\n",(*numString));
-
-	char* str = malloc(sizeof(char*) * (*numString));
-  char** arr = malloc(sizeof(char**) * (*numString));
 	fseek(f, 0, SEEK_SET);
-	
-	int i;
-	fscanf(f, "%s", str);
-	for(i = 0; !feof(f); i++){
-		arr[i] = str;
-		printf("%s ", arr[i]);
-		fflush(stdout);
-		fscanf(f, "%s", input);
-	}*/
 
 	fclose(f);
 	return NULL;
@@ -210,10 +195,7 @@ void printInteger(int * arrInteger, int numInteger)
  */
 void printString(char * * arrString, int numString)
 {
-	int i;
-	for(i = 0;i < numString;i++){
-		printf("arr[%d]: %s\n",i,arrString[i]);
-	}
+	
 	
 }
 
@@ -223,6 +205,7 @@ void printString(char * * arrString, int numString)
  */
 void freeInteger(int * arrInteger, int numInteger)
 {
+	
 }
 
 /* ----------------------------------------------- */
