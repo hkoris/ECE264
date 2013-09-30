@@ -176,7 +176,7 @@ char** readString(char * filename, int * numString)
 	char* str = malloc(sizeof(char*) * (*numString));
   char** arr = malloc(sizeof(char**) * (*numString));
 	fseek(f, 0, SEEK_SET);
-	
+	/*
 	int i;
 	fscanf(f, "%s", str);
 	for(i = 0; !feof(f); i++){
