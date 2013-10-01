@@ -48,10 +48,7 @@ int main(int argc, char ** argv)
 		    return EXIT_FAILURE;
 		}
 	    printf("\n");
-		printf("\n\nPhase2\n");
 	    printString(arrString, numString);
-		printf("Phase3");
-		fflush(stdout);
 	    sortString(arrString, numString);
 	    printf("\n\n   // ~ Printing Sorted Output ~ //\n\n");
 	    printString(arrString, numString);

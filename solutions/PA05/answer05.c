@@ -2,7 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "pa05.h"
-#define LINELENGTH 80
+#define LINELENGTH 250
+
+//Function Declarations
+int intcmp(const void* a, const void* b);
+int strSortCmp(const void* a, const void* b);
 
 /*
  * Read a file of integers.
@@ -166,13 +170,19 @@ char** readString(char * filename, int * numString)
 
 	char input[LINELENGTH];
 	while(fgets(input, LINELENGTH, f) != NULL){
-		printf("hello");
-		(*numString) = (*numString) + 1;
+		(*numString)++;
 	}
 	fseek(f, 0, SEEK_SET);
+	char** arr = malloc(sizeof(char**) * (*numString));
+	int i;
+
+	for(i = 0; fgets(input, LINELENGTH, f) != NULL; i++){
+		arr[i] = malloc(sizeof(char*) * (strlen(input)+1));
+		strcpy(arr[i], input);
+	}
 
 	fclose(f);
-	return NULL;
+	return arr;
 }
 
 /* ----------------------------------------------- */
@@ -183,7 +193,7 @@ void printInteger(int * arrInteger, int numInteger)
 {
 	int i;
 	for(i = 0;i < numInteger;i++){
-		printf("arr[%d]: %d\n",i,arrInteger[i]);
+		printf("%d\n", arrInteger[i]);
 	}
 }
 
@@ -195,8 +205,15 @@ void printInteger(int * arrInteger, int numInteger)
  */
 void printString(char * * arrString, int numString)
 {
-	
-	
+	int i;
+	int len;
+	for(i = 0;i < numString;i++){
+		printf("%s", arrString[i]);
+		len = (int) strlen(arrString[i]);
+		if(arrString[i][len-1] != '\n'){
+			printf("\n");
+		}
+	}
 }
 
 /* ----------------------------------------------- */
@@ -205,7 +222,7 @@ void printString(char * * arrString, int numString)
  */
 void freeInteger(int * arrInteger, int numInteger)
 {
-	
+	free(arrInteger);
 }
 
 /* ----------------------------------------------- */
@@ -216,6 +233,11 @@ void freeInteger(int * arrInteger, int numInteger)
  */
 void freeString(char * * arrString, int numString)
 {
+	int i;
+	for(i = 0;i < numString;i++){
+		free(arrString[i]);
+	}
+	free(arrString);
 }
 
 /* ----------------------------------------------- */
@@ -238,7 +260,20 @@ void freeString(char * * arrString, int numString)
 
 int saveInteger(char * filename, int * arrInteger, int numInteger)
 {
-   return 0;
+	FILE* f = fopen(filename, "w");
+	if(f == NULL){
+		printf("\n****Failed to save file\n");
+		return 0;
+	}	
+ 
+	char* newLine = "\n";
+	int i;
+	for(i = 0;i < numInteger; i++){
+		fprintf(f, "%d", arrInteger[i]);
+		fprintf(f, "%s", newLine);
+	}
+	fclose(f);
+  return 1;
 }
 
 /* ----------------------------------------------- */
@@ -261,7 +296,23 @@ int saveInteger(char * filename, int * arrInteger, int numInteger)
 
 int saveString(char * filename, char * * arrString, int numString)
 {
-    return 0;
+	FILE* f = fopen(filename, "w");
+	if(f == NULL){
+		printf("\n****Failed to save file\n");
+		return 0;
+	}	
+ 
+	int i;
+	int len;
+	for(i = 0;i < numString; i++){
+		fprintf(f, "%s", arrString[i]);
+		len = (int) strlen(arrString[i]);
+		if(arrString[i][len-1] != '\n'){
+			fprintf(f, "%c", '\n');
+		}
+	}
+	fclose(f);
+  return 1;
 }
 
 /* ----------------------------------------------- */
@@ -274,6 +325,23 @@ int saveString(char * filename, char * * arrString, int numString)
 
 void sortInteger(int * arrInteger, int numInteger)
 {
+	qsort(arrInteger, numInteger, sizeof(int), intcmp);
+
+}
+
+int intcmp(const void* a, const void* b){
+	int* pointa = (int*) a;
+	int* pointb = (int*) b;
+	int vala = *pointa;
+	int valb = *pointb;
+
+	if(vala < valb){
+		return -1;
+	}
+	if(vala == valb){
+		return 0;
+	}
+	return 1;
 }
 
 
@@ -289,6 +357,27 @@ void sortInteger(int * arrInteger, int numInteger)
 
 void sortString(char * * arrString, int numString)
 {
+	qsort(arrString, numString, sizeof(*arrString), strSortCmp);
 }
+
+int strSortCmp(const void* a, const void* b){
+	char** pointa = (char**) a;
+	char** pointb = (char**) b;
+	char* vala = (char*) *pointa;
+	char* valb = (char*) *pointb;
+
+	if(strcmp(vala, valb) == 0){
+		return 0;
+	}
+	if(strcmp(vala, valb) < 0){
+		return -1;
+	}
+	return 1;
+}
+
+
+
+
+
 
 
