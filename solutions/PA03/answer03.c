@@ -7,7 +7,7 @@
 void sorthelp(int*, int, int);
 void swap(int* arr, int i, int j);
 int searchhelp(int* arr, int low, int high, int key);
-void printarr(int* arr, int length);
+//void printarr(int* arr, int length);
 
 /**
  * Read a file of integers.
@@ -160,15 +160,6 @@ void sorthelp(int* arr, int i, int j){
 	sorthelp(arr, i+1, right);
 }
 
-void printarr(int* arr, int length){
-	int i = 0;
-	for(i; i < length; i++){
-		printf("%d - ", arr[i]);
-	}
-
-	printf("\n");
-}
-
 void swap(int* arr, int i, int j){
 	int temp = arr[i];
 	arr[i] = arr[j];
@@ -225,7 +216,7 @@ int search(int * arr, int length, int key)
 }
 
 int searchhelp(int* arr, int low, int high, int key){
-	if(low > high){
+	if(low >= high){
 		return -1;
 	}
 

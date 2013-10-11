@@ -7,7 +7,7 @@
 void sorthelp(int*, int, int);
 void swap(int* arr, int i, int j);
 int searchhelp(int* arr, int low, int high, int key);
-void printarr(int* arr, int length);
+//void printarr(int* arr, int length);
 
 /**
  * Read a file of integers.
@@ -69,6 +69,9 @@ void printarr(int* arr, int length);
 int * readIntegers(const char * filename, int * numberOfIntegers)
 {
 	FILE* fil = fopen(filename, "r");
+	if(fil == NULL){
+		return NULL;
+	}
 	int in;
 	int i;
 	int read;
@@ -155,15 +158,6 @@ void sorthelp(int* arr, int i, int j){
 
 	sorthelp(arr, left, i-1);
 	sorthelp(arr, i+1, right);
-}
-
-void printarr(int* arr, int length){
-	int i = 0;
-	for(i; i < length; i++){
-		printf("%d - ", arr[i]);
-	}
-
-	printf("\n");
 }
 
 void swap(int* arr, int i, int j){

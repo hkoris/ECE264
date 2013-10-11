@@ -1,0 +1,6 @@
+harry@harry-desktop:~/ECE264$ git push https://github.com/hkoris/ECE264.git
+Username for 'https://github.com': hkoris
+Password for 'https://hkoris@github.com': 
+To https://github.com/hkoris/ECE264.git
+   4554c45..168963c  master -> master
+

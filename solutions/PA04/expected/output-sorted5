@@ -1,19 +1,12 @@
 
 
-1. All
 = 2 + 2 + 2 + 2
 = 2 + 2 + 4
 = 2 + 4 + 2
 = 2 + 6
-2. Increasing
-3. Decreasing
 = 4 + 2 + 2
 = 4 + 4
-4. Odd
-5. Even
 = 6 + 2
-6. OddAndEven
-7. Prime
 = 8
 current method: 5
 current value: 8
@@ -22,3 +15,10 @@ methods:
 <method> <value to partition>
 partitionEven 8
 Start Partitioning...
+1. All
+2. Increasing
+3. Decreasing
+4. Odd
+5. Even
+6. OddAndEven
+7. Prime
