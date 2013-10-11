@@ -200,11 +200,22 @@ struct Image * loadImage(const char* filename)
 	}
 	
 	struct Image* img = malloc(sizeof(struct ImageHeader));
+	if(img == NULL){
+		printf("\nFailed to allocate memory for struct Image\n");
+		fclose(fil);
+		return NULL;
+	}
 	img->width = imgHead.width;
 	img->height = imgHead.height;
 	img->comment = malloc(imgHead.comment_len * sizeof(char));
-	img->data = malloc(sizeof(uint8_t) * imgHead.width * imgHead.height);
+	img->data = malloc(sizeof(uint8_t) * imgHead.width * imgHead.height);	
 	
+	if(img->comment == NULL){
+		printf("\nComment size is too big\n");
+		freeImage(img);
+		fclose(fil);
+		return NULL;
+	}
 	readSuc = fread(img->comment, sizeof(char), imgHead.comment_len, fil);
 	if(readSuc != imgHead.comment_len){
 		printf("\nthe comment is not as long as specified in the header\n");
@@ -219,9 +230,13 @@ struct Image * loadImage(const char* filename)
 		return NULL;
 	}
 
+	if(img->data == NULL){
+		printf("\nWidth*Height size is too big\n");
+		freeImage(img);
+		fclose(fil);
+		return NULL;
+	}
 	readSuc = fread(img->data, sizeof(uint8_t), imgHead.width * imgHead.height, fil);
-printf("complete");
-fflush(stdout);
 	if(readSuc != imgHead.width * imgHead.height)
 	{
 		printf("\ninsufficient data read\n");
@@ -229,12 +244,6 @@ fflush(stdout);
 		fclose(fil);
 		return NULL;
 	}
-	if(sizeof(img->data) < sizeof(uint8_t)*imgHead.width*imgHead.height){
-		printf("\nwidth)height is too big\n");
-		freeImage(img);
-		fclose(fil);
-		return NULL;
-	}	
 
 	//Check for anything else in the file here.
 	readSuc = fread(img->data, sizeof(uint8_t), 1, fil);
