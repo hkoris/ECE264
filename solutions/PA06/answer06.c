@@ -181,6 +181,7 @@ struct Image * loadImage(const char* filename)
 		return NULL;
 	}
 
+	//Retriece image header information
 	struct ImageHeader imgHead;
 	int readSuc = fread(&imgHead, sizeof(struct ImageHeader), 1, fil);
 	if(readSuc != 1){
@@ -199,7 +200,8 @@ struct Image * loadImage(const char* filename)
 		return NULL;
 	}
 	
-	struct Image* img = malloc(sizeof(struct ImageHeader));
+	//Retriece Image information
+	struct Image* img = malloc(sizeof(struct Image));
 	if(img == NULL){
 		printf("\nFailed to allocate memory for struct Image\n");
 		fclose(fil);
@@ -210,6 +212,7 @@ struct Image * loadImage(const char* filename)
 	img->comment = malloc(imgHead.comment_len * sizeof(char));
 	img->data = malloc(sizeof(uint8_t) * imgHead.width * imgHead.height);	
 	
+	//Retrieve comment
 	if(img->comment == NULL){
 		printf("\nComment size is too big\n");
 		freeImage(img);
@@ -230,6 +233,7 @@ struct Image * loadImage(const char* filename)
 		return NULL;
 	}
 
+	//Retrieve pixel data
 	if(img->data == NULL){
 		printf("\nWidth*Height size is too big\n");
 		freeImage(img);
