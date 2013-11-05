@@ -3,7 +3,9 @@
 #include <stdlib.h>
 
 SparseNode* SparseArray_copy_helper(SparseNode *, SparseNode*);
-SparseNode* SparseArray_remove_helper(SparseNode* array);
+SparseNode* SparseArray_remove_helper(SparseNode*);
+SparseNode* SparseArray_merge_helper(SparseNode*, SparseNode*);
+
 
 /* 
  * Create a single instance of a sparse array tree node with a specific
@@ -23,6 +25,9 @@ SparseNode* SparseArray_remove_helper(SparseNode* array);
 
 SparseNode *SparseNode_create(int index, int value)
 {
+	if(value == 0){
+		return NULL;
+	}
 	SparseNode* new = malloc(sizeof(SparseNode));
 	new->index = index;
 	new->value = value;
@@ -94,7 +99,9 @@ SparseNode *SparseArray_build(int * indicies, int * values, int length)
 	SparseNode* array = NULL;
 	int i;
 	for(i = 0;i < length;i++){
-		array = SparseArray_insert(array, indicies[i], values[i]);
+		if(values[i] != 0){
+			array = SparseArray_insert(array, indicies[i], values[i]);
+		}
 	}
 
   return array;
@@ -116,12 +123,9 @@ void SparseArray_destroy ( SparseNode * array )
 	if(array == NULL){
 		return;
 	}
-	SparseArray_destroy(array->left);
-
-	printf("\nRemoving: %d", array->index);
-	SparseArray_remove(array, array->index);
-
-	SparseArray_destroy(array->right);
+	while(array != NULL){
+		array = SparseArray_remove(array, array->index);
+	}
 }
 
 /* Retrieve the smallest index in the sparse array tree.
@@ -178,13 +182,13 @@ int SparseArray_getMax ( SparseNode * array )
  */
 SparseNode * SparseArray_getNode(SparseNode * array, int index )
 {
-	if(array == NULL || index == 0){
+	if(array == NULL){
 		return NULL;
 	}
-	else if(array->index == index){
+	if(array->index == index){
 		return array;
 	}
-	else if(array->index < index){
+	if(array->index < index){
 		return SparseArray_getNode(array->right, index);
 	}
   return SparseArray_getNode(array->left, index);
@@ -219,7 +223,7 @@ SparseNode * SparseArray_getNode(SparseNode * array, int index )
 */
 SparseNode * SparseArray_remove ( SparseNode * array, int index )
 {
-	if(array == NULL || index == 0){
+	if(array == NULL){
 		return NULL;
 	}
 	if(array->index == index){
@@ -240,7 +244,8 @@ SparseNode * SparseArray_remove ( SparseNode * array, int index )
 		SparseNode* replacement = SparseArray_remove_helper(array->right);
 		array->index = replacement->index;
 		array->value = replacement->value;
-		SparseArray_remove(array->right, array->value);
+		array->right = SparseArray_remove(array->right, array->index);
+		return array;
 	}
 	
 	if(index > array->index){
@@ -280,8 +285,9 @@ SparseNode * SparseArray_copy_helper(SparseNode * array, SparseNode* copy){
 	if(array == NULL){
 		return NULL;
 	}
-	SparseArray_copy_helper(array->left, copy);
 	copy = SparseArray_insert(copy, array->index, array->value);
+
+	SparseArray_copy_helper(array->left, copy);
 	SparseArray_copy_helper(array->right, copy);
 	return copy;
 }
@@ -314,7 +320,54 @@ SparseNode * SparseArray_copy_helper(SparseNode * array, SparseNode* copy){
 
 SparseNode * SparseArray_merge(SparseNode * array_1, SparseNode * array_2)
 {
-	
+	if(array_1 == NULL && array_2 == NULL){
+		return NULL;
+	}
+	if(array_1 == NULL){
+		return SparseArray_copy(array_2);
+	}
+	if(array_2 == NULL){
+		return SparseArray_copy(array_1);
+	}
 
-  return NULL;
+	SparseNode* copy = SparseArray_copy(array_1);
+	copy = SparseArray_merge_helper(copy, array_2);
+	
+  return copy;
 }
+
+SparseNode* SparseArray_merge_helper(SparseNode* copy, SparseNode* array_2){
+	if(array_2 == NULL){
+		return copy;
+	}
+
+	SparseNode* node_1 = SparseArray_getNode(copy, array_2->index);
+	if(node_1 == NULL){
+		copy = SparseArray_insert(copy, array_2->index, array_2->value);
+	}
+	else{
+		node_1->value += array_2->value;
+		if(node_1->value == 0){
+			copy = SparseArray_remove(copy, node_1->index);
+		}
+	}
+
+	copy = SparseArray_merge_helper(copy, array_2->left);
+	copy = SparseArray_merge_helper(copy, array_2->right);
+	return copy;
+}
+
+void printArray(SparseNode* node){
+	if(node == NULL){
+		return;
+	}
+
+	printArray(node->left);
+	printf("\nindex: %d", node->index);
+	printArray(node->right);
+}	
+
+
+
+
+
